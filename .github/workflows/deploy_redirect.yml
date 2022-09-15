@@ -9,6 +9,8 @@ on:
         required: true
       AWS_REGION:
         required: true
+      AWS_TERRAFORM_BUCKET:
+        required: true
     inputs:
       ENVIRONMENT:
         description: application environment (production, preprod, qa, development)
@@ -35,7 +37,7 @@ on:
 
 env:
   application-name: configure-aws-s3-website
-  application-root: ${{ env.apllication-name }}/src
+  application-root: configure-aws-s3-website/src
 
 jobs:
   deploy:
@@ -71,6 +73,7 @@ jobs:
         working-directory: ${{ env.apllication-root }}
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_TERRAFORM_BUCKET: ${{ secrets.AWS_TERRAFORM_BUCKET }}
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
           SUBDOMAIN: ${{ inputs.SUBDOMAIN }}
