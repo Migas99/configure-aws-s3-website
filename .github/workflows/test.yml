@@ -1,0 +1,40 @@
+name: Run Linting and Infrastructures' Unit Tests
+
+on:
+  pull_request:
+    paths: 
+      - "**"
+
+jobs:
+  deploy:
+    name: Run Terraform CDK Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment
+        run: |
+          case ${GITHUB_REF##*/} in
+            "production") echo "ENVIRONMENT=production" >> $GITHUB_ENV ;;
+            "preprod") echo "ENVIRONMENT=preprod" >> $GITHUB_ENV ;;
+            "qa") echo "ENVIRONMENT=qa" >> $GITHUB_ENV ;;
+            *) echo "ENVIRONMENT=development" >> $GITHUB_ENV ;;
+          esac
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Install Terraform CDK
+        run: npm install --global cdktf-cli@0.12.2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Terraform CDK Unit Tests
+        run: npm run test
