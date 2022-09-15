@@ -1,20 +1,21 @@
 import { Construct } from "constructs";
 import { TerraformStack } from "cdktf";
-import { buildS3Backend } from "@/lib/backends";
-import { buildAWSProvider } from "@/lib/providers";
-import { createHostedZoneRecord, getHostedZone } from "@/lib/route53";
-import { getHostedZoneCertificate } from "@/lib/acm";
-import { buildRedirectCloudfrontDistribution } from "@/lib/cloudfront";
-import { buildS3Bucket, setS3BucketBlockPublicAccess, setS3BucketWebsiteConfig } from "@/lib/s3";
+import { buildS3Backend } from "../lib/backends";
+import { buildAWSProvider } from "../lib/providers";
+import { createHostedZoneRecord, getHostedZone } from "../lib/route53";
+import { getHostedZoneCertificate } from "../lib/acm";
+import { buildRedirectCloudfrontDistribution } from "../lib/cloudfront";
+import { buildS3Bucket, setS3BucketBlockPublicAccess, setS3BucketWebsiteConfig } from "../lib/s3";
+import { AWS_ADMINISTRATIVE_REGION } from "../config";
 
 export class WebsiteRedirectStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    buildS3Backend(this, "s3-website-redirect");
+    buildS3Backend(this, "s3-website-redirect-state");
     buildAWSProvider(this);
 
-    const administrativeRegionProvider = buildAWSProvider(this, "us-east-1");
+    const administrativeRegionProvider = buildAWSProvider(this, AWS_ADMINISTRATIVE_REGION);
     const domainHostedZone = getHostedZone(this);
     const certificate = getHostedZoneCertificate(this, administrativeRegionProvider);
 

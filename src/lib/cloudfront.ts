@@ -3,7 +3,7 @@ import { Construct } from "constructs";
 import { DataAwsAcmCertificate } from "@cdktf/provider-aws/lib/acm";
 import { CloudfrontDistribution, CloudfrontDistributionConfig, CloudfrontDistributionCustomErrorResponse, CloudfrontDistributionDefaultCacheBehavior, CloudfrontDistributionDefaultCacheBehaviorForwardedValues, CloudfrontDistributionDefaultCacheBehaviorForwardedValuesCookies, CloudfrontDistributionOrigin, CloudfrontDistributionOriginCustomOriginConfig, CloudfrontDistributionOriginS3OriginConfig, CloudfrontDistributionRestrictions, CloudfrontDistributionRestrictionsGeoRestriction, CloudfrontDistributionViewerCertificate, CloudfrontOriginAccessIdentity, CloudfrontOriginAccessIdentityConfig } from "@cdktf/provider-aws/lib/cloudfront";
 import { S3Bucket, S3BucketWebsiteConfiguration } from "@cdktf/provider-aws/lib/s3";
-import { DEFAULTS, BUCKET_NAME } from "@/config";
+import { DEFAULTS, IS_PRODUCTION, BUCKET_NAME } from "@/config";
 
 export const buildCloudfrontOAI = (scope: Construct) => {
   return new CloudfrontOriginAccessIdentity(scope, `${BUCKET_NAME}-oai`, <CloudfrontOriginAccessIdentityConfig>{
@@ -17,6 +17,14 @@ export const buildWebsiteCloudfrontDistribution = (
   bucket: S3Bucket,
   oai: CloudfrontOriginAccessIdentity
 ): CloudfrontDistribution => {
+  let defaultTtl = 0;
+  let maxTtl = 0;
+
+  if (IS_PRODUCTION) {
+    defaultTtl = 2592000;
+    maxTtl = 31536000;
+  }
+
   return new CloudfrontDistribution(scope, `website-${BUCKET_NAME}-cloudfront-distribution`,
     <CloudfrontDistributionConfig>{
       comment: DEFAULTS.comment,
@@ -58,8 +66,8 @@ export const buildWebsiteCloudfrontDistribution = (
           }
         },
         viewerProtocolPolicy: "redirect-to-https",
-        defaultTtl: 2592000,
-        maxTtl: 31536000,
+        defaultTtl: defaultTtl,
+        maxTtl: maxTtl,
         minTtl: 0
       },
       restrictions: <CloudfrontDistributionRestrictions>{
