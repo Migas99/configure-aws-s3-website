@@ -1,0 +1,74 @@
+name: Deploy Website Infrastructure
+
+on:
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+    inputs:
+      ENVIRONMENT:
+        description: application environment (production, preprod, qa, development)
+        type: string
+        required: false
+        default: development
+      SERVICE_NAME:
+        description: service name calling this workflow
+        type: string
+        required: true
+      SUBDOMAIN:
+        description: website subdomain
+        type: string
+        required: false
+        default: ""
+      DOMAIN:
+        description: webite domain
+        type: string
+        required: true
+
+env:
+  application-name: configure-aws-s3-website
+  application-root: ${{ env.apllication-name }}/src
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          repository: kuwabuga/configure-aws-s3-website
+          path: ${{ env.apllication-name }}
+      
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        working-directory: ${{ env.apllication-root }}
+        run: npm install
+      
+      - name: Install Terraform CDK
+        run: npm install --global cdktf-cli@0.12.2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:  ${{ secrets.AWS_REGION }}
+
+      - name: Deploy with Terraform CDK
+        working-directory: ${{ env.apllication-root }}
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+          SUBDOMAIN: ${{ inputs.SUBDOMAIN }}
+          DOMAIN: ${{ inputs.DOMAIN }}
+        run: cdktf deploy --auto-approve website-stack
