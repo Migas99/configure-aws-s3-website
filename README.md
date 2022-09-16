@@ -1,15 +1,14 @@
-# configure-aws-s3-website
+# Configure AWS S3 Static Website
 
-To be added ...
+Extensible github workflows to create all necessary resources AWS to host a static website and redirects.
 
 # Usage
-
 ## Using `deploy_website.yml` workflow
 This example template will create a static website under the domain `www.my-organization.com`
 ```
 configure-website:
     name: Configure AWS S3 website
-    uses: migas99/configure-aws-s3-website/.github/workflows/deploy_website.yml@production
+    uses: Migas99/configure-aws-s3-website/.github/workflows/deploy_website.yml@production
     secrets:
         AWS_ACCESS_KEY_ID: <ACCESS_KEY_ID>
         AWS_SECRET_ACCESS_KEY: <SECRET_ACCESS_KEY>
@@ -21,13 +20,12 @@ configure-website:
         SUBDOMAIN: www
         DOMAIN: my-organization.com
 ```
-
 ## Using `deploy_redirect.yml` workflow
 This example template will create a rule that will redirect from `my-organization.com` to `www.my-organization.com`
 ```
 configure-website-redirect:
     name: Configure AWS S3 website direct
-    uses: migas99/configure-aws-s3-website/.github/workflows/deploy_redirect.yml@production
+    uses: Migas99/configure-aws-s3-website/.github/workflows/deploy_redirect.yml@production
     secrets:
         AWS_ACCESS_KEY_ID: <ACCESS_KEY_ID>
         AWS_SECRET_ACCESS_KEY: <SECRET_ACCESS_KEY>

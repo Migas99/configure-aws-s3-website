@@ -43,7 +43,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
-          repository: kuwabuga/configure-aws-s3-website
+          repository: Migas99/configure-aws-s3-website
           path: ${{ env.apllication-name }}
       
       - name: Install Node
