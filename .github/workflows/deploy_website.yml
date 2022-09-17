@@ -31,20 +31,18 @@ on:
         type: string
         required: true
 
-env:
-  application-name: configure-aws-s3-website
-  application-root: configure-aws-s3-website/src
-
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./configure-aws-s3-website/src
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
           repository: Migas99/configure-aws-s3-website
-          path: ${{ env.apllication-name }}
+          path: configure-aws-s3-website
       
       - name: Install Node
         uses: actions/setup-node@v2
@@ -52,7 +50,7 @@ jobs:
           node-version: "16"
 
       - name: Install dependencies
-        working-directory: ${{ env.apllication-root }}
+        working-directory: ${{ env.working-directory }}
         run: npm install
       
       - name: Install Terraform CDK
@@ -66,7 +64,7 @@ jobs:
           aws-region:  ${{ secrets.AWS_REGION }}
 
       - name: Deploy with Terraform CDK
-        working-directory: ${{ env.apllication-root }}
+        working-directory: ${{ env.working-directory }}
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_TERRAFORM_BUCKET: ${{ secrets.AWS_TERRAFORM_BUCKET }}
