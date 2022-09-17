@@ -24,11 +24,7 @@
     "stripInternal": true,
     "target": "ES2018",
     "incremental": true,
-    "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["../src/*"]
-    }
+    "skipLibCheck": true
   },
   "include": [
     "**/*.ts"
@@ -36,8 +32,5 @@
   "exclude": [
     "node_modules",
     "cdktf.out"
-  ],
-  "ts-node": {
-    "require": ["tsconfig-paths/register"]
-  }
+  ]
 }
