@@ -1,7 +1,7 @@
 import { Construct } from "constructs";
 import { CloudfrontOriginAccessIdentity } from "@cdktf/provider-aws/lib/cloudfront";
 import { DataAwsS3Bucket, S3Bucket, S3BucketConfig, S3BucketPolicy, S3BucketPolicyConfig, S3BucketPublicAccessBlock, S3BucketPublicAccessBlockConfig, S3BucketWebsiteConfiguration, S3BucketWebsiteConfigurationConfig, S3BucketWebsiteConfigurationRedirectAllRequestsTo } from "@cdktf/provider-aws/lib/s3";
-import { DEFAULTS, REDIRECT, BUCKET_NAME } from "@/config";
+import { DEFAULTS, REDIRECT, BUCKET_NAME } from "../config";
 
 export const buildS3Bucket = (scope: Construct): S3Bucket => {
   return new S3Bucket(scope, `${BUCKET_NAME}-bucket`, <S3BucketConfig>{

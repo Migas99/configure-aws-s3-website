@@ -24,8 +24,7 @@
   "dependencies": {
     "@cdktf/provider-aws": "^9.0.24",
     "cdktf": "^0.12.2",
-    "constructs": "^10.1.97",
-    "tsconfig-paths": "^4.1.0"
+    "constructs": "^10.1.97"
   },
   "devDependencies": {
     "@types/jest": "^29.0.0",
